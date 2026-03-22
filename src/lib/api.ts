@@ -1,11 +1,12 @@
 import http from './api-client';
-import type { User, Vehicle, Trip, Booking, Delivery, Payment, Wallet, WalletTransaction, Review, Conversation, Message, TokenPair, Paginated, CancelPreview, CancelResult } from './types';
+import type { User, Vehicle, Trip, Booking, Delivery, Payment, Wallet, WalletTransaction, Review, Conversation, Message, TokenPair, Paginated, CancelPreview, CancelResult, ContractDocument } from './types';
 
 // ─── Auth ───
 export const authApi = {
   register: (body: { email: string; password: string; first_name: string; last_name: string; phone_number?: string }) =>
     http.post<TokenPair>('/auth/register', body),
   login: (email: string, password: string) => http.post<TokenPair>('/auth/login', { email, password }),
+  google: (credential: string) => http.post<TokenPair>('/auth/google', { credential }),
   refresh: (refreshToken: string) => http.post<TokenPair>('/auth/refresh', { refreshToken }),
   forgotPassword: (email: string) => http.post('/auth/forgot-password', { email }),
   resetPassword: (token: string, password: string) => http.post('/auth/reset-password', { token, password }),
@@ -33,10 +34,15 @@ export const tripsApi = {
   search: (params: Record<string, string | number | boolean>) => http.get<Paginated<Trip>>('/trips/search', { params }),
   get: (id: string) => http.get<Trip>(`/trips/${id}`),
   create: (body: {
-    vehicle_id: string; origin_address: string; origin_lat: number; origin_lng: number;
-    destination_address: string; destination_lat: number; destination_lng: number;
+    vehicle_id: string;
+    departure_city_id?: string | number;
+    arrival_city_id?: string | number;
+    departure?: { point_id?: string | number | null; address: string; lat?: number | null; lng?: number | null };
+    arrival?: { point_id?: string | number | null; address: string; lat?: number | null; lng?: number | null };
+    origin_address?: string; origin_lat?: number; origin_lng?: number;
+    destination_address?: string; destination_lat?: number; destination_lng?: number;
     departure_time: string; available_seats: number; price_per_seat: number;
-    accepts_parcels?: boolean; parcel_price?: number;
+    accepts_parcels?: boolean; parcel_price?: number; notes?: string | null;
   }) => http.post<Trip>('/trips', body),
   update: (id: string, body: Partial<Trip>) => http.patch<Trip>(`/trips/${id}`, body),
   publish: (id: string) => http.patch<Trip>(`/trips/${id}/publish`),
@@ -110,4 +116,9 @@ export const reviewsApi = {
 // ─── Reports ───
 export const reportsApi = {
   create: (body: { reported_id: string; reason: string }) => http.post('/reports', body),
+};
+
+export const contractsApi = {
+  current: () => http.get<ContractDocument | null>('/contracts/current'),
+  accept: (version: string) => http.post<{ accepted: boolean; version: string }>('/contracts/accept', { version }),
 };

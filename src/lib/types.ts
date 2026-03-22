@@ -9,8 +9,26 @@ export interface User {
   avatar_url: string | null;
   role: 'user' | 'support' | 'admin';
   is_banned: boolean;
+  email_verified?: boolean;
+  auth_provider?: 'local' | 'google';
+  google_linked?: boolean;
   payout_email: string | null;
+  current_contract_version?: string | null;
+  accepted_contract_version?: string | null;
+  contract_accepted_at?: string | null;
+  contract_acceptance_required?: boolean;
   created_at: string;
+  updated_at?: string;
+}
+
+export interface ContractDocument {
+  id: string;
+  title: string;
+  version: string;
+  content: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Vehicle {
@@ -35,6 +53,20 @@ export interface Trip {
   to_city?: string;
   from_address?: string | null;
   to_address?: string | null;
+  departure_city_id?: string | null;
+  arrival_city_id?: string | null;
+  departure_point_id?: string | null;
+  arrival_point_id?: string | null;
+  departure_address?: string | null;
+  departure_lat?: number | null;
+  departure_lng?: number | null;
+  arrival_address?: string | null;
+  arrival_lat?: number | null;
+  arrival_lng?: number | null;
+  departure_label?: string;
+  arrival_label?: string;
+  departure_point_name?: string | null;
+  arrival_point_name?: string | null;
   departure_at?: string;
   // Frontend alias fields (used in some pages)
   origin_address?: string;

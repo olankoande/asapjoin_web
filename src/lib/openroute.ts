@@ -42,7 +42,7 @@ const CITY_COORDS: Record<string, [number, number]> = {
 /**
  * Géocode une ville → [lng, lat]
  */
-export async function geocodeCity(city: string): Promise<[number, number] | null> {
+export async function geocodePlace(city: string): Promise<[number, number] | null> {
   // D'abord chercher dans le cache local
   const normalized = city.toLowerCase().split(',')[0].trim();
   if (CITY_COORDS[normalized]) return CITY_COORDS[normalized];
@@ -63,6 +63,10 @@ export async function geocodeCity(city: string): Promise<[number, number] | null
     // Silently fail
   }
   return null;
+}
+
+export async function geocodeCity(city: string): Promise<[number, number] | null> {
+  return geocodePlace(city);
 }
 
 /**

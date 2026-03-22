@@ -44,8 +44,35 @@ cp .env.example .env
 |---|---|---|
 | `VITE_API_URL` | URL de base de l'API backend | `http://localhost:3000/api/v1` |
 | `VITE_STRIPE_PUBLIC_KEY` | Clé publique Stripe (mode test) | `pk_test_xxx` |
+| `VITE_GOOGLE_CLIENT_ID` | Client ID Google Identity Services (Web) | `xxxxxxxx.apps.googleusercontent.com` |
 
 > ⚠️ Éditez le fichier `.env` avec vos propres valeurs avant de lancer l'application.
+
+## Google Sign-In
+
+Le frontend utilise exclusivement **Google Identity Services for Web** via le script `https://accounts.google.com/gsi/client`.
+
+### Configuration Google Cloud
+
+1. Créez un client OAuth 2.0 de type **Web application**.
+2. Dans **Authorized JavaScript origins**, ajoutez au minimum :
+   - `http://localhost:5173`
+   - l'URL de production du frontend
+3. Renseignez le même `Client ID` dans :
+   - `web/.env` via `VITE_GOOGLE_CLIENT_ID`
+   - `backend/.env` via `GOOGLE_CLIENT_ID`
+
+### Flux d'authentification
+
+- Le bouton officiel Google est affiché sur `/login` et `/register`.
+- Le frontend récupère uniquement le `credential` GIS.
+- Le frontend l'envoie à `POST /api/v1/auth/google`.
+- L'utilisateur n'est considéré connecté qu'après validation backend et retour des JWT applicatifs.
+
+### Liaison de compte
+
+- Si l'email existe déjà côté backend, le compte Google est lié automatiquement quand aucun autre `google_sub` n'est déjà associé.
+- En cas de conflit de liaison, l'API renvoie `GOOGLE_AUTH_EMAIL_CONFLICT`.
 
 ## Lancement
 

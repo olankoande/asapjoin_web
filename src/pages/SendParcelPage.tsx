@@ -89,13 +89,16 @@ function StripePaymentForm({ onSuccess, onError }: {
 }
 
 type FormData = {
+  recipient_name: string;
+  recipient_phone: string;
   recipient_email: string;
+  delivery_address: string;
   size_category: string;
   weight_kg: string;
   declared_value: string;
   instructions: string;
   pickup_notes: string;
-  dropoff_notes: string;
+  delivery_notes: string;
 };
 
 export default function SendParcelPage() {
@@ -115,13 +118,16 @@ export default function SendParcelPage() {
   } | null>(null);
 
   const [form, setForm] = useState<FormData>({
+    recipient_name: '',
+    recipient_phone: '',
     recipient_email: '',
+    delivery_address: '',
     size_category: 'S',
     weight_kg: '',
     declared_value: '',
     instructions: '',
     pickup_notes: '',
-    dropoff_notes: '',
+    delivery_notes: '',
   });
 
   const { data: trip, isLoading: tripLoading } = useQuery({
@@ -130,13 +136,31 @@ export default function SendParcelPage() {
     enabled: !!tripId,
   });
 
+  function buildDropoffNotes() {
+    const lines = [
+      `Adresse de livraison: ${form.delivery_address.trim()}`,
+      `Destinataire: ${form.recipient_name.trim()}`,
+      `Telephone: ${form.recipient_phone.trim()}`,
+    ];
+
+    if (form.recipient_email.trim()) {
+      lines.push(`Email: ${form.recipient_email.trim()}`);
+    }
+
+    if (form.delivery_notes.trim()) {
+      lines.push('', 'Instructions de livraison:', form.delivery_notes.trim());
+    }
+
+    return lines.join('\n');
+  }
+
   // Build the request body from form state
   function buildRequestBody() {
     return {
       trip_id: tripId!,
-      recipient_email: form.recipient_email || undefined,
+      recipient_email: form.recipient_email.trim() || undefined,
       pickup_notes: form.pickup_notes || undefined,
-      dropoff_notes: form.dropoff_notes || undefined,
+      dropoff_notes: buildDropoffNotes(),
       parcel: {
         size_category: form.size_category,
         weight_kg: form.weight_kg ? Number(form.weight_kg) : undefined,
@@ -210,6 +234,9 @@ export default function SendParcelPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (!form.recipient_name.trim()) { setError('Veuillez renseigner le nom complet du destinataire'); return; }
+    if (!form.recipient_phone.trim()) { setError('Veuillez renseigner le telephone du destinataire'); return; }
+    if (!form.delivery_address.trim()) { setError('Veuillez renseigner l adresse de livraison'); return; }
     if (!form.size_category) { setError('Veuillez sélectionner une taille de colis'); return; }
     prepareMutation.mutate();
   };
@@ -360,12 +387,34 @@ export default function SendParcelPage() {
         <div className="bg-card rounded-2xl border border-border p-5 space-y-3">
           <h3 className="text-sm font-semibold flex items-center gap-2"><User className="w-4 h-4 text-primary" /> Destinataire</h3>
           <Input
+            id="recipient_name"
+            label="Nom complet"
+            value={form.recipient_name}
+            onChange={(e) => setForm((p) => ({ ...p, recipient_name: e.target.value }))}
+            placeholder="Ex: Aminata Diallo"
+          />
+          <Input
+            id="recipient_phone"
+            label="Telephone"
+            type="tel"
+            value={form.recipient_phone}
+            onChange={(e) => setForm((p) => ({ ...p, recipient_phone: e.target.value }))}
+            placeholder="+1 514 000 0000"
+          />
+          <Input
             id="recipient_email"
             label="Email du destinataire (optionnel)"
             type="email"
             value={form.recipient_email}
             onChange={(e) => setForm((p) => ({ ...p, recipient_email: e.target.value }))}
             placeholder="destinataire@email.com"
+          />
+          <Input
+            id="delivery_address"
+            label="Adresse de livraison"
+            value={form.delivery_address}
+            onChange={(e) => setForm((p) => ({ ...p, delivery_address: e.target.value }))}
+            placeholder="Adresse complete de livraison"
           />
           <p className="text-xs text-muted-foreground">Si le destinataire a un compte, il pourra confirmer la réception.</p>
         </div>
@@ -441,12 +490,12 @@ export default function SendParcelPage() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">📍 Point de livraison</label>
+            <label className="text-sm font-medium text-foreground mb-1.5 block">📦 Note de ramassage</label>
             <textarea
-              value={form.dropoff_notes}
-              onChange={(e) => setForm((p) => ({ ...p, dropoff_notes: e.target.value }))}
+              value={form.delivery_notes}
+              onChange={(e) => setForm((p) => ({ ...p, delivery_notes: e.target.value }))}
               className="w-full h-16 px-4 py-2 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-              placeholder="Adresse, nom sur la sonnette..."
+              placeholder="Instructions pour le ramassage, étage, code d'entrée..."
             />
           </div>
         </div>

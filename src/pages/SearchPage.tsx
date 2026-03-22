@@ -177,8 +177,8 @@ function TripCard({ trip }: { trip: Trip }) {
                   <div className="w-2.5 h-2.5 rounded-full bg-accent ring-2 ring-accent/20" />
                 </div>
                 <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-semibold truncate">{trip.origin_address}</p>
-                  <p className="text-sm font-semibold truncate">{trip.destination_address}</p>
+                  <p className="text-sm font-semibold truncate">{trip.departure_label || trip.origin_address}</p>
+                  <p className="text-sm font-semibold truncate">{trip.arrival_label || trip.destination_address}</p>
                 </div>
               </div>
             </div>
@@ -231,18 +231,16 @@ export default function SearchPage() {
   const [seats, setSeats] = useState('1');
   const [parcels, setParcels] = useState(false);
   const [submittedParams, setSubmittedParams] = useState<Record<string, string>>({});
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(true);
 
   const { data: tripsData, isLoading, error, refetch } = useQuery({
     queryKey: ['trips-search', submittedParams],
     queryFn: () => tripsApi.search(submittedParams).then((r) => r.data),
-    enabled: hasSearched,
+    enabled: true,
   });
 
   const trips: Trip[] = tripsData?.data ?? (Array.isArray(tripsData) ? tripsData : []);
-  const sortedTrips = [...trips].sort(
-    (a, b) => new Date(a.departure_time || 0).getTime() - new Date(b.departure_time || 0).getTime(),
-  );
+  const sortedTrips = trips;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

@@ -157,11 +157,17 @@ export default function TripDetailPage() {
           </div>
           <div className="flex-1 space-y-4">
             <div>
-              <p className="font-medium">{trip.from_city || trip.origin_address}</p>
+              <p className="font-medium">{trip.departure_label || trip.from_city || trip.origin_address}</p>
+              {trip.departure_address && trip.departure_address !== trip.departure_label && (
+                <p className="text-xs text-muted-foreground">{trip.departure_address}</p>
+              )}
               <p className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="w-3 h-3" />{formatDate(trip.departure_at || trip.departure_time)}</p>
             </div>
             <div>
-              <p className="font-medium">{trip.to_city || trip.destination_address}</p>
+              <p className="font-medium">{trip.arrival_label || trip.to_city || trip.destination_address}</p>
+              {trip.arrival_address && trip.arrival_address !== trip.arrival_label && (
+                <p className="text-xs text-muted-foreground">{trip.arrival_address}</p>
+              )}
               {trip.estimated_arrival && <p className="text-xs text-muted-foreground">Arrivée estimée : {formatDate(trip.estimated_arrival)}</p>}
             </div>
           </div>
@@ -298,7 +304,11 @@ export default function TripDetailPage() {
             )}
           </div>
           <p className="text-xs text-muted-foreground mb-3">Ce conducteur accepte les colis sur ce trajet.</p>
-          <Button onClick={() => navigate(`/trips/${trip.id}/send-parcel`)} variant="outline" className="w-full" disabled={!online}>
+          <Button
+            onClick={() => navigate(`/trips/${trip.id}/send-parcel`)}
+            className="w-full bg-accent text-white shadow-[0_6px_20px_rgb(245_158_11/0.35)] hover:brightness-110 hover:shadow-[0_10px_28px_rgb(245_158_11/0.45)]"
+            disabled={!online}
+          >
             <Package className="w-4 h-4 mr-2" />
             {!online ? 'Hors ligne' : 'Envoyer un colis'}
           </Button>

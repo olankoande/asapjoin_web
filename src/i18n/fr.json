@@ -54,6 +54,20 @@
     "hasAccount": "Déjà un compte ?",
     "login": "Se connecter"
   },
+  "auth": {
+    "googleCta": "Continuer avec Google",
+    "googleLoading": "Chargement de Google...",
+    "googleSigningIn": "Connexion avec Google...",
+    "googleUnavailable": "La connexion Google n'est pas configurÃ©e pour cet environnement.",
+    "errors": {
+      "GOOGLE_AUTH_DISABLED": "La connexion Google n'est pas disponible pour le moment.",
+      "GOOGLE_SCRIPT_LOAD_FAILED": "Impossible de charger Google. VÃ©rifiez votre connexion et rÃ©essayez.",
+      "GOOGLE_POPUP_CLOSED": "La fenÃªtre Google a Ã©tÃ© fermÃ©e avant la fin de la connexion.",
+      "INVALID_GOOGLE_TOKEN": "Le jeton Google est invalide. Veuillez rÃ©essayer.",
+      "GOOGLE_AUTH_EMAIL_CONFLICT": "Cet email existe dÃ©jÃ  et ne peut pas Ãªtre liÃ© automatiquement Ã  Google.",
+      "PASSWORD_LOGIN_NOT_AVAILABLE": "Ce compte utilise Google. Continuez avec Google pour vous connecter."
+    }
+  },
   "search": {
     "badge": "Covoiturage & livraison",
     "title": "Où allez-vous ?",
@@ -370,8 +384,8 @@
     "notesSection": "Notes",
     "pickupPoint": "📦 Point de ramassage",
     "pickupPlaceholder": "Adresse, étage, code d'entrée...",
-    "dropoffPoint": "📍 Point de livraison",
-    "dropoffPlaceholder": "Adresse, nom sur la sonnette...",
+    "dropoffPoint": "📦 Note de ramassage",
+    "dropoffPlaceholder": "Instructions pour le ramassage, étage, code d'entrée...",
     "deliveryFee": "Frais de livraison",
     "paymentRequired": "💳 Le paiement sera requis avant l'enregistrement de votre demande.",
     "continueToPayment": "Continuer vers le paiement",

@@ -20,6 +20,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const applySession = useCallback((data: { accessToken: string; refreshToken: string; user: User }) => {
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    setUser(data.user);
+  }, []);
+
   // Init: fetch user on mount if token exists
   const [initialized, setInitialized] = useState(false);
   if (!initialized) {
@@ -31,16 +37,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const { data } = await authApi.login(email, password);
-    localStorage.setItem('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
-    setUser(data.user);
+    applySession(data);
+  };
+
+  const loginWithGoogle = async (credential: string) => {
+    const { data } = await authApi.google(credential);
+    applySession(data);
   };
 
   const register = async (body: { email: string; password: string; first_name: string; last_name: string; phone_number?: string }) => {
     const { data } = await authApi.register(body);
-    localStorage.setItem('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
-    setUser(data.user);
+    applySession(data);
   };
 
   const logout = () => {
@@ -50,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, acceptSession: applySession, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

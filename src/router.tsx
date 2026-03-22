@@ -17,6 +17,7 @@ import VehiclesPage from '@/pages/VehiclesPage';
 import DriverTripsPage from '@/pages/DriverTripsPage';
 import MyDisputesPage from '@/pages/MyDisputesPage';
 import DisputeDetailPage from '@/pages/DisputeDetailPage';
+import ContractAcceptancePage from '@/pages/ContractAcceptancePage';
 
 export const router = createBrowserRouter([
   // Auth pages (no shell)
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
       { path: '/messages', element: <MessagesPage /> },
       { path: '/wallet', element: <WalletPage /> },
       { path: '/account', element: <AccountPage /> },
+      { path: '/contract/accept', element: <ContractAcceptancePage /> },
       { path: '/vehicles', element: <VehiclesPage /> },
       { path: '/history', element: <DashboardPage /> },
       { path: '/my-disputes', element: <MyDisputesPage /> },

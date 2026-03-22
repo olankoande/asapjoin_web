@@ -6,12 +6,13 @@ import { getApiError } from '@/lib/api-client';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import GoogleSignInButton from '@/features/auth/google/GoogleSignInButton';
 import { Mail, Lock, User, Phone } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 export default function RegisterPage() {
   const { t } = useTranslation();
-  const { register } = useAuth();
+  const { register, acceptSession } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ first_name: '', last_name: '', email: '', password: '', phone_number: '' });
   const [error, setError] = useState('');
@@ -31,6 +32,12 @@ export default function RegisterPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleError = (err: Error & { code?: string }) => {
+    const apiError = getApiError(err);
+    const code = err.code || apiError.code;
+    setError(t(`auth.errors.${code}`, { defaultValue: apiError.message }));
   };
 
   return (
@@ -89,6 +96,14 @@ export default function RegisterPage() {
             <span className="bg-background px-3 text-muted-foreground">{t('common.or')}</span>
           </div>
         </div>
+
+        <GoogleSignInButton
+          onSuccess={async (session) => {
+            acceptSession(session);
+            navigate('/search');
+          }}
+          onError={handleGoogleError}
+        />
 
         <p className="text-center text-sm text-muted-foreground">
           {t('register.hasAccount')}{' '}

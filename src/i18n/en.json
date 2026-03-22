@@ -54,6 +54,20 @@
     "hasAccount": "Already have an account?",
     "login": "Sign in"
   },
+  "auth": {
+    "googleCta": "Continue with Google",
+    "googleLoading": "Loading Google...",
+    "googleSigningIn": "Signing in with Google...",
+    "googleUnavailable": "Google sign-in is not configured for this environment.",
+    "errors": {
+      "GOOGLE_AUTH_DISABLED": "Google sign-in is currently unavailable.",
+      "GOOGLE_SCRIPT_LOAD_FAILED": "Google could not be loaded. Check your connection and try again.",
+      "GOOGLE_POPUP_CLOSED": "The Google window was closed before sign-in completed.",
+      "INVALID_GOOGLE_TOKEN": "The Google token is invalid. Please try again.",
+      "GOOGLE_AUTH_EMAIL_CONFLICT": "This email already exists and cannot be linked to Google automatically.",
+      "PASSWORD_LOGIN_NOT_AVAILABLE": "This account uses Google. Continue with Google to sign in."
+    }
+  },
   "search": {
     "badge": "Carpooling & delivery",
     "title": "Where are you going?",
@@ -370,8 +384,8 @@
     "notesSection": "Notes",
     "pickupPoint": "📦 Pickup point",
     "pickupPlaceholder": "Address, floor, entry code...",
-    "dropoffPoint": "📍 Delivery point",
-    "dropoffPlaceholder": "Address, name on doorbell...",
+    "dropoffPoint": "📦 Pickup note",
+    "dropoffPlaceholder": "Pickup instructions, floor, entry code...",
     "deliveryFee": "Delivery fee",
     "paymentRequired": "💳 Payment will be required before your request is registered.",
     "continueToPayment": "Continue to payment",

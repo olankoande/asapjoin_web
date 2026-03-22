@@ -6,12 +6,13 @@ import { getApiError } from '@/lib/api-client';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
+import GoogleSignInButton from '@/features/auth/google/GoogleSignInButton';
 import { Mail, Lock } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { login, acceptSession } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,6 +31,12 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleError = (err: Error & { code?: string }) => {
+    const apiError = getApiError(err);
+    const code = err.code || apiError.code;
+    setError(t(`auth.errors.${code}`, { defaultValue: apiError.message }));
   };
 
   return (
@@ -109,6 +116,14 @@ export default function LoginPage() {
             <span className="bg-background px-3 text-muted-foreground">{t('common.or')}</span>
           </div>
         </div>
+
+        <GoogleSignInButton
+          onSuccess={async (session) => {
+            acceptSession(session);
+            navigate('/search');
+          }}
+          onError={handleGoogleError}
+        />
 
         <p className="text-center text-sm text-muted-foreground">
           {t('login.noAccount')}{' '}
